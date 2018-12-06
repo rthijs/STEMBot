@@ -1,87 +1,43 @@
-# vscode-hello-python
-Hello World for [ev3dev] + [Visual Studio Code][code] + [Python]
+# SO De Vesten STEM Robot
 
+Abstractie van de STEM Robot componenten zodat leerlingen snel aan de slag kunnen om hun robot te programmeren met Python.
 
-## Overview
-This is a git repository to help you get started programming a robot using
-ev3dev in Visual Studio Code using the Python programming language.
+## Vereisten
 
+### STEM Robot
 
-## Prerequisites
-* LEGO MINDSTORMS EV3, Dexter Industries Brick Pi, Mindsensors PiStorms, or
-  FatcatLab EVB with [ev3dev] installed. **Does not work with ev3dev-jessie!
-  Be sure to grab a snapshot image of ev3dev-stretch.**
-* A computer (Windows, macOS, or Linux) with [Visual Studio Code][code]
-  installed.
+Dit werkt alleen met deze robots:
 
+TODO: foto toevoegen
 
-## Step-by-Step
-1.  Download the [vscode-hello-python][zip] project from GitHub and unzip it.
+| Poort | Sensor
+|-------|-------------|
+| 1     | Touch       |
+| 2     | Gyro        |
+| 3     | Kleur/Licht |
+| 4     | Ultrasoon   |
 
-    [zip]: https://github.com/ev3dev/vscode-hello-python/archive/master.zip
+| Poort | Motor  |
+|-------|--------|
+| A     | Medium |
+| B     | Groot  |
+| C     | Groot  |
+| D     | Geen   |
 
-2.  Open the `vscode-hello-python-master` folder in Visual Studio Code.
+### EV3Dev
 
-    ![screenshot](.README/vscode-open-folder.png)
+Ev3dev is een besturingssysteem voor de Lego EV3 brick gebaseerd op Debian Linux. Dit moet op een SD-kaartje geschreven worden dat in de Robot geplaatst wordt. Volg de instructies op de website van [ev3dev](http://www.ev3dev.org).
 
-    ![screenshot](.README/vscode-open-folder-dialog.png)
+### Verbind je laptop met de robot
 
-6.  Click *Show Recommendations* when asked.
+De makkelijkste manier is werken met bluetooth maar met een usb-kabel lukt het ook. Volg de instructies van [ev3dev](https://www.ev3dev.org/docs/tutorials/connecting-to-the-internet-via-bluetooth/).
 
-    ![screenshot](.README/vscode-show-recommendations.png)
+### Visual Studio Code
 
-7.  Install the `ev3dev-browser` extension. If you have Python installed on your
-    computer, you can install that extension too. (Don't install it if you don't
-    have Python already installed.)
+Download [Visual Studio Code](https://code.visualstudio.com/) en configureer dit om met Python en Mindstorms te werken. Volg hiervoor de instructies op [deze pagina](https://github.com/ev3dev/vscode-hello-python) maar in plaats van het vscode-hello-python project te downloaden download je best dit STEM Robot project, dat kan je doen bovenaan deze pagina.
 
-    ![screenshot](.README/vscode-extensions-recommended.png)
+## DeVestenBot.py
 
-8.  After installation completes, click *Reload* and *Reload Window*.
+Deze klasse bevat een abstractie voor de robot met een aantal nuttige functies die je kan gebruiken in je eigen scripts. Zo kan je de robot laten rijden tot aan een hindernis zonder dat je de afzonderlijke motors en sensors moet bedienen en uitlezen.
 
-    ![screenshot](.README/vscode-ev3dev-browser-reload.png)
-
-    ![screenshot](.README/vscode-reload-window.png)
-
-9. Open the *Explorer* activity pane.
-
-    ![screenshot](.README/vscode-explorer-icon.png)
-
-10. Click the arrow next to *EV3DEV DEVICE BROWSER* to open it.
-
-    ![screenshot](.README/vscode-ev3dev-browser-collapsed.png)
-
-    ![screenshot](.README/vscode-ev3dev-browser-expanded.png)
-
-11. Ensure that your ev3dev device is turned on and has a network connection to
-    the host computer. USB, Bluetooth, Wi-Fi or wired will work.
-
-12. Click the text where it says "Click here to connect to a device".
-    A box will pop up that lists discovered devices. Select one.
-
-    ![screenshot](.README/vscode-searching-for-devices.png)
-
-13. Once the device has connected, you will see a green dot and the
-    `/home/robot` folder.
-
-    ![screenshot](.README/vscode-home-robot.png)
-
-14. Press <kbd>F5</kbd> to download the program and run it.
-
-15. The *Output* pane will automatically open and show the status of the
-    program and any error/debug messages.
-
-    ![screenshot](.README/vscode-output.png)
-
-18. Open the source code file, `hello.py`, to learn more.
-
-
-## TODO
-
-* Explain how to get code completion working
-* Explain how to install ev3dev-lang-python on the host computer
-
-[ev3dev]: http://www.ev3dev.org
-[code]: https://code.visualstudio.com/
-[python]: https://www.python.org/
-[git]: https://git-scm.com/
-[github]: https://desktop.github.com/
+Een kort overzicht van de beschikbare functies staat hieronder, voor de details kan je in de klasse kijken of gebruik maken van de tips in VSCode.
