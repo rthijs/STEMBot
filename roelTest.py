@@ -6,7 +6,7 @@ bot = DeVestenBot()
 
 afstand = bot.meet_afstand_in_cm()
 
-bot.rij_centimeters(afstand)
+bot.rij_centimeters(afstand - 5)
 
 bot.log("grijper sluiten")
 
