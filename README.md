@@ -36,6 +36,8 @@ De makkelijkste manier is werken met bluetooth maar met een usb-kabel lukt het o
 
 Download [Visual Studio Code](https://code.visualstudio.com/) en configureer dit om met Python en Mindstorms te werken. Volg hiervoor de instructies op [deze pagina](https://github.com/ev3dev/vscode-hello-python) maar in plaats van het vscode-hello-python project te downloaden download je best dit STEM Robot project, dat kan je doen bovenaan deze pagina.
 
+Een programma naar de robot sturen en uitvoeren kan je doen door op "F5" te drukken.
+
 ## Hoe beginnen?
 
 1. Maak een nieuwe file met een `.py` extensie.
@@ -121,6 +123,39 @@ rij_tot_obstakel()
 ```
 
 ### Voorbeeld 2: in een vierkant rijden
+
+In een vierkant rijden is makkelijk, 4 stukken rechtdoor met daartussen 90° draaien. In theorie is 3 keer draaien genoeg maar laten we 4 keer draaien
+omdat we dan gewoon `4 * (rijden + draaien)` kunnen doen, dat is makkelijker te programmeren. 
+
+```python
+#!/usr/bin/env python3
+
+from DeVestenBot import DeVestenBot
+
+bot = DeVestenBot()
+
+def rij_in_vierkant(lengte_zijde=20):
+    for _ in range(4):
+        bot.rij_centimeters(lengte_zijde)
+        bot.draai_links()
+
+rij_in_vierkant()
+```
+
+Aan de functie `rij_in_vierkant` geef ik geen parameter mee, de optionele paramater `lengte_zijde` is standaard gelijk aan 20. Als je een ander formaat
+van vierkant wil rijden kan je deze parameter wel meegeven, ofwel op positie (nu is er maar één):
+
+```python
+rij_in_vierkant(50)
+```
+
+Ofwel met de parameternaam bij:
+
+```python
+rij_in_vierkant(lengte_zijde=50)
+```
+
+Als je twijfelt wat het beste is denk dan even na wat het duidelijkst (meest leesbaar) is, twijfel je dan nog dan maakt het waarschijnlijk niet uit.
 
 ## DeVestenBot.py
 
