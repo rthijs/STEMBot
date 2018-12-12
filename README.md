@@ -142,7 +142,7 @@ def rij_in_vierkant(lengte_zijde=20):
 rij_in_vierkant()
 ```
 
-Aan de functie `rij_in_vierkant` geef ik geen parameter mee, de optionele paramater `lengte_zijde` is standaard gelijk aan 20. Als je een ander formaat
+Aan de functie `rij_in_vierkant` geef ik geen parameter mee, de optionele parameter `lengte_zijde` is standaard gelijk aan 20. Als je een ander formaat
 van vierkant wil rijden kan je deze parameter wel meegeven, ofwel op positie (nu is er maar één):
 
 ```python
