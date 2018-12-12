@@ -36,6 +36,81 @@ De makkelijkste manier is werken met bluetooth maar met een usb-kabel lukt het o
 
 Download [Visual Studio Code](https://code.visualstudio.com/) en configureer dit om met Python en Mindstorms te werken. Volg hiervoor de instructies op [deze pagina](https://github.com/ev3dev/vscode-hello-python) maar in plaats van het vscode-hello-python project te downloaden download je best dit STEM Robot project, dat kan je doen bovenaan deze pagina.
 
+## Hoe beginnen?
+
+1. Maak een nieuwe file met een `.py` extensie.
+2. Specifieer dat je Python 3 gebruikt: `#!/usr/bin/env python3`
+3. Importeer de `DeVestenBot` klasse: `from DeVestenBot import DeVestenBot`
+4. Instantieer `DeVestenBot`, ik noem hem "bot" maar dat is niet verplicht: `bot = DeVestenBot()`
+5. Gebruik die instantie om de robot te controleren, bv: `bot.rij_centimeters(50)`
+
+Het begin van je script zou er zo moeten uitzien:
+
+```python
+#!/usr/bin/env python3
+
+from DeVestenBot import DeVestenBot
+
+bot = DeVestenBot()
+```
+### Voorbeeld 1: rij tot aan obstakel
+
+Er zijn `meet_afstand_in_cm`- en `rij_centimeters`-functies voorzien. Deze kunnen we gebruiken om tot aan een obstakel te rijden.
+
+```python
+afstand = bot.meet_afstand_in_cm()
+
+bot.rij_centimeters(afstand)
+```
+
+Als we deze code uitvoeren merken we dat de robot het obstakel ramt en dan pas stopt. Dat komt omdat de robot iets voor de afstandssensor
+uitsteekt, als we een offset toevoegen om hiermee rekening te houden gaat het beter.
+
+```python
+afstand = bot.meet_afstand_in_cm()
+
+bot.rij_centimeters(afstand - 5)
+```
+
+De code werkt maar ze is niet echt "proper", iemand die zonder voorkennis deze code leest zal zich afvragen waarom die ```- 5``` er staat. 
+We zouden commentaar kunnen toevoegen maar dat zorgt er gewoon voor dat die persoon nog meer moet lezen en als we later de code veranderen
+vergeten we misschien de commentaar up te daten waardoor deze verouderd of zelfs fout kan zijn. Dit zorgt dan voor nog meer verwarring.
+
+Beter is een veriabele te introduceren met een duidelijk naam waardoor de code klaar en duidelijk wordt:
+
+```python
+afstand = bot.meet_afstand_in_cm()
+
+offset = 5
+
+bot.rij_centimeters(afstand - offset)
+```
+
+Veel beter, al is het niet op het eerste zicht duidelijk dat dit stuk code zorgt dat de robot rijdt tot aan een obstakel. Om dit te weten
+moeten we de code al lezen en zelf interpreteren. Als het aantal lijnen code klein is zal dit geen grote problemen opleveren, maar met alle
+functionaliteit die we toevoegen gaat dit probleem groter en groter worden. Daarom steken we deze code in een eigen functie en geven we die
+functie een beschrijvende naam:
+
+```python
+#!/usr/bin/env python3
+
+from DeVestenBot import DeVestenBot
+
+bot = DeVestenBot()
+
+def rij_tot_obstakel():
+    offset = 5
+    afstand = bot.meet_afstand_in_cm()
+    bot.rij_centimeters(afstand - offset)
+
+rij_tot_obstakel()
+```
+
+Wie nu de code induikt ziet meteen wat dit moet doen, namelijk 'rij tot obstakel', als je wil weten **hoe** dit gebeurt kan de code bekijken in 
+de aangeroepen functie.
+
+### Voorbeeld 2: in een vierkant rijden
+
 ## DeVestenBot.py
 
 Deze klasse bevat een abstractie voor de robot met een aantal nuttige functies die je kan gebruiken in je eigen scripts. Zo kan je de robot laten rijden tot aan een hindernis zonder dat je de afzonderlijke motors en sensors moet bedienen en uitlezen.
