@@ -8,7 +8,7 @@ Abstractie van de STEM Robot componenten zodat leerlingen snel aan de slag kunne
 
 Dit werkt alleen met deze robots:
 
-![STEM Robot](images/STEMRobot.jpg)
+![STEM Robot](.README/STEMRobot.jpg)
 
 | Poort | Sensor
 |-------|-------------|
