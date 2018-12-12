@@ -92,6 +92,20 @@ functionaliteit die we toevoegen gaat dit probleem groter en groter worden. Daar
 functie een beschrijvende naam:
 
 ```python
+def rij_tot_obstakel():
+    offset = 5
+    afstand = bot.meet_afstand_in_cm()
+    bot.rij_centimeters(afstand - offset)
+
+rij_tot_obstakel()
+```
+
+Wie nu de code induikt ziet meteen wat dit moet doen, namelijk 'rij tot obstakel', als je wil weten **hoe** dit gebeurt kan de code bekijken in 
+de aangeroepen functie. 
+
+De uiteindelijke code ziet er zo uit:
+
+```python
 #!/usr/bin/env python3
 
 from DeVestenBot import DeVestenBot
@@ -105,9 +119,6 @@ def rij_tot_obstakel():
 
 rij_tot_obstakel()
 ```
-
-Wie nu de code induikt ziet meteen wat dit moet doen, namelijk 'rij tot obstakel', als je wil weten **hoe** dit gebeurt kan de code bekijken in 
-de aangeroepen functie.
 
 ### Voorbeeld 2: in een vierkant rijden
 
