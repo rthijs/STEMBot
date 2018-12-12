@@ -76,9 +76,9 @@ bot.rij_centimeters(afstand - 5)
 
 De code werkt maar ze is niet echt "proper", iemand die zonder voorkennis deze code leest zal zich afvragen waarom die ```- 5``` er staat. 
 We zouden commentaar kunnen toevoegen maar dat zorgt er gewoon voor dat die persoon nog meer moet lezen en als we later de code veranderen
-vergeten we misschien de commentaar up te daten waardoor deze verouderd of zelfs fout kan zijn. Dit zorgt dan voor nog meer verwarring.
+vergeten we misschien de commentaar te updaten, waardoor deze verouderd of zelfs fout kan zijn. Dit zorgt dan voor nog meer verwarring.
 
-Beter is een veriabele te introduceren met een duidelijk naam waardoor de code klaar en duidelijk wordt:
+Beter is een variabele te introduceren met een duidelijker naam, waardoor de code klaar en duidelijk wordt:
 
 ```python
 afstand = bot.meet_afstand_in_cm()
@@ -89,8 +89,8 @@ bot.rij_centimeters(afstand - offset)
 ```
 
 Veel beter, al is het niet op het eerste zicht duidelijk dat dit stuk code zorgt dat de robot rijdt tot aan een obstakel. Om dit te weten
-moeten we de code al lezen en zelf interpreteren. Als het aantal lijnen code klein is zal dit geen grote problemen opleveren, maar met alle
-functionaliteit die we toevoegen gaat dit probleem groter en groter worden. Daarom steken we deze code in een eigen functie en geven we die
+moeten we de code al lezen en zelf interpreteren. Als het aantal lijnen code klein is, zal dit geen grote problemen opleveren, maar met alle
+functionaliteit die we toevoegen wordt dit probleem steeds groter. Daarom steken we deze code in een eigen functie en geven we die
 functie een beschrijvende naam:
 
 ```python
@@ -102,7 +102,7 @@ def rij_tot_obstakel():
 rij_tot_obstakel()
 ```
 
-Wie nu de code induikt ziet meteen wat dit moet doen, namelijk 'rij tot obstakel', als je wil weten **hoe** dit gebeurt kan de code bekijken in 
+Wie nu de code induikt, ziet meteen wat dit moet doen; namelijk 'rij tot obstakel'. Als je wil weten **hoe** dit gebeurt, kan je de code bekijken in 
 de aangeroepen functie. 
 
 De uiteindelijke code ziet er zo uit:
@@ -124,7 +124,7 @@ rij_tot_obstakel()
 
 ### Voorbeeld 2: in een vierkant rijden
 
-In een vierkant rijden is makkelijk, 4 stukken rechtdoor met daartussen 90° draaien. In theorie is 3 keer draaien genoeg maar laten we 4 keer draaien
+In een vierkant rijden is makkelijk, 4 stukken rechtdoor, met daartussen 90° draaien. In theorie is 3 keer draaien genoeg maar laten we 4 keer draaien
 omdat we dan gewoon `4 * (rijden + draaien)` kunnen doen, dat is makkelijker te programmeren. 
 
 ```python
@@ -155,7 +155,7 @@ Ofwel met de parameternaam bij:
 rij_in_vierkant(lengte_zijde=50)
 ```
 
-Als je twijfelt wat het beste is denk dan even na wat het duidelijkst (meest leesbaar) is, twijfel je dan nog dan maakt het waarschijnlijk niet uit.
+Als je twijfelt wat het beste is, denk dan even na wat het duidelijkst (meest leesbaar) is. Twijfel je dan nog dan maakt het waarschijnlijk niet uit.
 
 ## DeVestenBot.py
 
