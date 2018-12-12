@@ -22,14 +22,6 @@ class DeVestenBot():
         self.gyro = GyroSensor(address=INPUT_2)
 
     #
-    # Helper functies
-    #
-
-    def log(self, text_to_print):
-        '''print output naar console in VSCode'''
-        print(text_to_print, file=sys.stderr)
-
-    #
     # Functies ivm rijden
     #
 
@@ -175,6 +167,32 @@ class DeVestenBot():
         
     # Gyroscoop
 
+    def get_orientatie(self):
+        '''De orientatie van de robot in ° ten opzichte van het begin van het programma.'''
+        return self.gyro.angle
+
     # Druksensor
 
+    # TODO
+
     # Kleursensor
+
+    # TODO
+
+    #
+    # Functies voor output die de robot kan doen
+    #
+
+    # Console logging (remote)
+
+    def log(self, text_to_print):
+        '''print output naar console in VSCode'''
+        print(text_to_print, file=sys.stderr)
+
+    # Scherm
+
+    # TODO
+
+    # Geluid
+
+    # TODO
