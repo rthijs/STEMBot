@@ -6,6 +6,7 @@ from ev3dev2.motor import (OUTPUT_A, OUTPUT_B, OUTPUT_C, OUTPUT_D, LargeMotor,
                            MediumMotor, MoveTank, Motor)
 from ev3dev2.sensor.lego import UltrasonicSensor, GyroSensor
 from ev3dev2.sensor import INPUT_1, INPUT_2, INPUT_3, INPUT_4
+from ev3dev2 import sound
 
 
 class DeVestenBot():
@@ -17,6 +18,7 @@ class DeVestenBot():
         self.motor_rechts_poort = OUTPUT_C
         self.motor_links = LargeMotor(self.motor_links_poort)
         self.motor_rechts = LargeMotor(self.motor_rechts_poort)
+        self.geluid = sound.Sound()
 
         # sensors
         self.gyro = GyroSensor(address=INPUT_2)
@@ -195,4 +197,40 @@ class DeVestenBot():
 
     # Geluid
 
-    # TODO
+    def spreek(self, zin, wacht=False):
+        '''
+        Text to speech, geef de zin die de robot moet zeggen als parameter.
+        Deze functie werkt assynchroon dus de robot gaat verder met zijn anderen handelingen
+        terwijl hij spreekt. Wil je die niet gebruik dan "wacht=True".
+        '''
+        def _spreek():
+            self.geluid.speak(zin)
+
+        if (wacht):
+            _spreek().wait()
+        else:
+            _spreek()
+
+    def speel(self, wav, wacht=False):
+        '''
+        Speel een wav file. Deze functie is asynchroon, wil je dat je robot wacht tot het geluid klaar is met spelen
+        gebruik dan "wacht=True". 
+        
+        Let er op dat de file niet te groot is, het duurt dan langer om je programma
+        te starten (bij elke start van een script worden alle files geupload naar de robot) en het geheugen
+        is beperkt. Met Audacity kan je 16 bit mono wavs maken.
+        '''
+        def _speel():
+            self.geluid.play(wav)
+
+        if (wacht):
+            _speel().wait()
+        else:
+            _speel().play(wav)
+
+   #
+   # Ev3dev ondersteunt nog veel meer manieren om je robot geluid te laten maken, zo is er bv nog de mogelijkheid om beepjes
+   # te maken, noten op de juiste toon en met de gewenste duur te spelen en zelfs hele muziekstukken. Moest dit je interesseren
+   # kan dit een leuke oefening zijn om zelf een functie te implementeren die dit toestaat. De help tekst van de Sound library
+   # kan je op weg helpen.
+   #
