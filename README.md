@@ -17,12 +17,12 @@ Dit werkt alleen met deze robots:
 | 3     | Kleur/Licht |
 | 4     | Ultrasoon   |
 
-| Poort | Motor  |
-|-------|--------|
-| A     | Medium |
-| B     | Groot  |
-| C     | Groot  |
-| D     | Geen   |
+| Poort | Motor  |                          |
+|:-----:|:-------|:-------------------------|
+| A     | Medium | grijper                  |
+| B     | Groot  | aandrijving linker wiel  |
+| C     | Groot  | aandrijving rechter wiel |
+| D     | Geen   |                          |
 
 ### EV3Dev
 
