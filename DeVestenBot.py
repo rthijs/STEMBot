@@ -21,9 +21,17 @@ class DeVestenBot():
         # sensors
         self.gyro = GyroSensor(address=INPUT_2)
 
+    #
+    # Helper functies
+    #
+
     def log(self, text_to_print):
         '''print output naar console in VSCode'''
         print(text_to_print, file=sys.stderr)
+
+    #
+    # Functies ivm rijden
+    #
 
     def rij_centimeters(self, centimeters):
         '''
@@ -45,15 +53,24 @@ class DeVestenBot():
         robot_tank_drive.on_for_degrees(left_speed=25, right_speed=25, degrees=graden)
 
     def noodstop(self):
+        '''
+        Gebruik deze functie als je wil dat de robot stopt. Elke actie op de wielen die nog bezig is wordt afgesloten
+        en de robot zal remmen, dit wil zeggen dat hij niet uitbolt maar actief zal proberen te stoppen.
+        '''
         self.log("### (noodstop)")
         self.motor_links.stop(stop_action='brake')
         self.motor_rechts.stop(stop_action='brake')
+
+    #
+    # Functies ivm draaien
+    #
 
     def orienteer(self,richting):
         '''
         Draai de robot naar de gegeven richting. Bij de start van het programma is recht vooruit 0°.
         Deze functie is handig als de robot al veel draaibewegingen heeft moeten maken, deze hebben telkens
-        een kleine afwijking, met deze functie kan je heroriënteren.
+        een kleine afwijking, met deze functie kan je heroriënteren. Deze functie heeft een maximale afwijking
+        van ongeveer 3° (experimenteel bepaald, afwijking meestal door overshoot in de draairichting.)
         '''
         huidige_orientatie = self.gyro.angle
         wijzerzin = 1
@@ -88,19 +105,27 @@ class DeVestenBot():
             self.noodstop()
 
     def orienteer_noord(self):
+        ''' Draai de robot zodat hij dezelfde orientatie krijgt als toen het programma startte.'''
         self.orienteer(0)    
     
     def orienteer_oost(self):
+        '''Orienteer de robot 90° rechts ten opzichte van de orientatie bij het begin van het programma.'''
         self.orienteer(90) 
     
     def orienteer_zuid(self):
+        '''Orienteer de robot 180° ten opzichte van de orientatie bij het begin van het programma.'''
         self.orienteer(180) 
     
     def orienteer_west(self):
+        '''Orienteer de robot 90° links ten opzichte van de orientatie bij het begin van het programma.'''
         self.orienteer(-90)
 
     def draai_graden(self, graden):
-
+        '''
+        Roteer de robot het gegeven aantal graden. Een kleine afwijking is te verwachten, de robot roteert
+        vaak 2 à 3° te ver. Gebruik negatieve graden om naar links te draaien. Gebruik een van de orienteer_*-functies
+        om een opeenstapeling van afwijkingen te vermijden.
+        '''
         huidige_orientatie = self.gyro.angle
         doel_orientatie = huidige_orientatie + graden
 
@@ -109,23 +134,38 @@ class DeVestenBot():
         self.orienteer(doel_orientatie)
 
     def draai_links(self):
+        '''Draai de robot 90° naar links, een kleine afwijking (tot 3°) is mogelijk, meestal door overshoot.'''
         self.draai_graden(-90)
 
     def draai_rechts(self):
+        '''Draai de robot 90° naar rechts, een kleine afwijking (tot 3°) is mogelijk, meestal door overshoot.'''
         self.draai_graden(90)
 
     def keer_om(self):
+        '''Draai de robot 180° naar rechts, een kleine afwijking (tot 3°) is mogelijk, meestal door overshoot.'''
         self.draai_graden(180)
 
+    #
+    # Functies ivm de grijper
+    #
+
     def grijper_open(self):
+        '''Zet de grijper omhoog.'''
         motor_grijper=MediumMotor(OUTPUT_A)
         motor_grijper.on_for_degrees(degrees=180,speed=50)
         motor_grijper.off()
 
     def grijper_sluit(self):
+        '''Doe de grijper omlaag.'''
         motor_grijper=MediumMotor(OUTPUT_A)
         motor_grijper.on_for_degrees(degrees=-180,speed=50)
         motor_grijper.off()
+
+    #
+    # Functies ivm de sensoren
+    #
+
+    # Ultrasoon
 
     def meet_afstand_in_cm(self):
         sensor = UltrasonicSensor(INPUT_4)
@@ -133,3 +173,8 @@ class DeVestenBot():
         print("gemeten afstand in cm: " + str(sensor.distance_centimeters), file=sys.stderr)
         return afstand
         
+    # Gyroscoop
+
+    # Druksensor
+
+    # Kleursensor
