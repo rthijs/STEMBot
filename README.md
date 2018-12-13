@@ -183,7 +183,7 @@ bot = DeVestenBot()
 bot.rij_tot_kleur_gelijk_aan(bot.kleur.COLOR_WHITE)
 ```
 
-#### rij_tot_kleur_gelijk_aan
+#### rij_tot_kleur_verschillend_van
 
 Rij rechtdoor tot de gegeven kleur niet meer gemeten wordt.
 
