@@ -242,11 +242,41 @@ Geeft de orientatie van de robot ten opzichte van de beginsituatie in graden.
 
 ### Druksensor
 
-TODO
+#### is_druksensor_ingedrukt
+
+Geeft True of False terug afhankelijk van of de sensor ingedrukt is of niet.
 
 ### Kleursensor
 
-TODO
+#### get_kleur
+
+Geeft de code van de gemeten kleur terug.
+
+Gebruik bij voorkeur een van de enums zoals `bot.kleur.COLOR_YELLOW` om te testen op kleur. Dit verhoogt de leesbaarheid van je code.
+
+Dit voorbeeld print voortdurend de gemeten kleur in de console van VS Code:
+
+```python
+#!/usr/bin/env python3
+
+from DeVestenBot import DeVestenBot
+
+bot = DeVestenBot()
+
+kleur_dictionary = {
+    bot.kleur.COLOR_NOCOLOR: "GEEN KLEUR",
+    bot.kleur.COLOR_BLACK: "ZWART",
+    bot.kleur.COLOR_BLUE: "BLAUW",
+    bot.kleur.COLOR_GREEN: "GROEN",
+    bot.kleur.COLOR_YELLOW: "GEEL",
+    bot.kleur.COLOR_RED: "ROOD",
+    bot.kleur.COLOR_WHITE: "WIT",
+    bot.kleur.COLOR_BROWN: "BRUIN"
+}
+
+while(True):
+    bot.log(kleur_dictionary[bot.get_kleur()])
+```
 
 ### Output
 

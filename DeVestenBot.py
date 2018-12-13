@@ -4,7 +4,7 @@ import sys, threading, time
 
 from ev3dev2.motor import (OUTPUT_A, OUTPUT_B, OUTPUT_C, OUTPUT_D, LargeMotor,
                            MediumMotor, MoveTank, Motor)
-from ev3dev2.sensor.lego import UltrasonicSensor, GyroSensor
+from ev3dev2.sensor.lego import UltrasonicSensor, GyroSensor, TouchSensor, ColorSensor
 from ev3dev2.sensor import INPUT_1, INPUT_2, INPUT_3, INPUT_4
 from ev3dev2 import sound
 
@@ -22,6 +22,8 @@ class DeVestenBot():
 
         # sensors
         self.gyro = GyroSensor(address=INPUT_2)
+        self.touch = TouchSensor(address=INPUT_1)
+        self.kleur = ColorSensor(address=INPUT_3)
 
     #
     # Functies ivm rijden
@@ -175,11 +177,17 @@ class DeVestenBot():
 
     # Druksensor
 
-    # TODO
+    def is_druksensor_ingedrukt(self):
+        '''antwoord met True als de sensor ingedrukt is, anders False'''
+        return self.touch.is_pressed
 
     # Kleursensor
 
-    # TODO
+    def get_kleur(self):
+        return self.kleur.color
+
+    def get_rood(self):
+        return self.kleur.COLOR_BLACK
 
     #
     # Functies voor output die de robot kan doen
