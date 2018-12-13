@@ -169,6 +169,36 @@ Een kort overzicht van de beschikbare functies staat hieronder, voor de details 
 
 Laat de robot het gegeven aantal centimeters rijden. Gebruik negatieve getallen om achteruit te rijden.
 
+#### rij_tot_kleur_gelijk_aan
+
+Rijdt rechtdoor tot de gemeten kleur gelijk is aan de gegeven kleur.
+
+```python
+#!/usr/bin/env python3
+
+from DeVestenBot import DeVestenBot
+
+bot = DeVestenBot()
+
+bot.rij_tot_kleur_gelijk_aan(bot.kleur.COLOR_WHITE)
+```
+
+#### rij_tot_kleur_gelijk_aan
+
+Rij rechtdoor tot de gegeven kleur niet meer gemeten wordt.
+
+```python
+#!/usr/bin/env python3
+
+from DeVestenBot import DeVestenBot
+
+bot = DeVestenBot()
+
+kleur_start = bot.get_kleur()
+
+bot.rij_tot_kleur_verschillend_van(kleur_start)
+```
+
 #### noodstop
 
 Stopt alle huidige beweging van de wielmotors, bv als deze in een andere thread moesten runnen, en remt actief.

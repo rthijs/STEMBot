@@ -57,6 +57,52 @@ class DeVestenBot():
         self.motor_links.stop(stop_action='brake')
         self.motor_rechts.stop(stop_action='brake')
 
+    def rij_tot_kleur_gelijk_aan(self,kleur):
+        '''
+        Rijdt rechtdoor tot de gegeven kleur herkent wordt.
+
+        .. code:: python
+
+            bot.rij_tot_kleur_gelijk_aan(bot.kleur.COLOR_RED)
+
+        '''
+        def _rij(self):
+            self.log("### in _rij: run forever")
+            robot_tank_drive = MoveTank(left_motor_port=self.motor_links_poort, right_motor_port=self.motor_rechts_poort)
+            robot_tank_drive.on(left_speed=50, right_speed=50)
+
+        t_rij = threading.Thread(target=_rij, args=(self,))
+        t_rij.start()
+
+        while self.get_kleur() != kleur:
+            self.log(str(self.get_kleur()))
+            pass
+        
+        self.noodstop()
+
+    def rij_tot_kleur_verschillend_van(self,kleur):
+        '''
+        Rij rechtdoor tot de gegeven kleur niet meer gemeten wordt.
+
+        .. code:: python
+
+            bot.rij_tot_kleur_verschillend_van(bot.kleur.COLOR_RED)
+
+        '''
+        def _rij(self):
+            self.log("### in _rij: run forever")
+            robot_tank_drive = MoveTank(left_motor_port=self.motor_links_poort, right_motor_port=self.motor_rechts_poort)
+            robot_tank_drive.on(left_speed=50, right_speed=50)
+
+        t_rij = threading.Thread(target=_rij, args=(self,))
+        t_rij.start()
+
+        while self.get_kleur() == kleur:
+            self.log(str(self.get_kleur()))
+            pass
+        
+        self.noodstop()
+
     #
     # Functies ivm draaien
     #
@@ -185,9 +231,6 @@ class DeVestenBot():
 
     def get_kleur(self):
         return self.kleur.color
-
-    def get_rood(self):
-        return self.kleur.COLOR_BLACK
 
     #
     # Functies voor output die de robot kan doen
