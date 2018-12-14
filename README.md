@@ -322,7 +322,15 @@ TODO
 
 #### Geluid
 
-TODO
+##### spreek
+
+Laat de robot praten met text-to-speech, geef de zin mee in een string als parameter: `bot.spreek("I only speak english")`
+
+De robot voert de volgende commando's al uit terwijl hij praat tenzij je de parameter "wacht" op `True` zet: `bot.spreek(zin="Hi everybody", wacht=True)`
+
+##### speel
+
+De robot speelt een wav-bestand af, net zoals met `spreek` kan je hem laten wachten met andere commando's uitvoeren door de parameter "wacht" op `True` te zetten.
 
 #### LEDs
 
