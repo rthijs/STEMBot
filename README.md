@@ -280,11 +280,7 @@ while(True):
 
 Console logging (remote)
 
-TODO
-
-#### Scherm
-
-TODO
+Gebruik `bot.log("tekst")` om tekst te schrijven in de VS Code outputconsole. Handig om je programma te debuggen.
 
 #### Geluid
 
@@ -297,7 +293,3 @@ De robot voert de volgende commando's al uit terwijl hij praat tenzij je de para
 ##### speel
 
 De robot speelt een wav-bestand af, net zoals met `spreek` kan je hem laten wachten met andere commando's uitvoeren door de parameter "wacht" op `True` te zetten.
-
-#### LEDs
-
-TODO
