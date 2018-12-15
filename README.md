@@ -233,26 +233,16 @@ Zet de grijper omhoog.
 
 Doe de grijper omlaag.
 
-### Ultrasoon
+### Sensoren
 
 #### meet_afstand_in_cm
 
 Geeft het aantal centimeter terug gemeten vanaf de ultrasone sensor, als je dit gebruikt om je robot tijdig te laten stoppen hou er dan rekening mee
 dat de voorkant van de robot een paar centimeter dichterbij de hindernis is dan de sensor.
 
-### Gyroscoop
-
-#### get_orientatie
-
-Geeft de orientatie van de robot ten opzichte van de beginsituatie in graden.
-
-### Druksensor
-
 #### is_druksensor_ingedrukt
 
 Geeft True of False terug afhankelijk van of de sensor ingedrukt is of niet.
-
-### Kleursensor
 
 #### get_kleur
 

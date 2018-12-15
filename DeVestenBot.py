@@ -271,12 +271,6 @@ class DeVestenBot():
         afstand = sensor.distance_centimeters
         print("gemeten afstand in cm: " + str(sensor.distance_centimeters), file=sys.stderr)
         return afstand
-        
-    # Gyroscoop
-
-    def get_orientatie(self):
-        '''De orientatie van de robot in ° ten opzichte van het begin van het programma.'''
-        return self.gyro.angle
 
     # Druksensor
 
