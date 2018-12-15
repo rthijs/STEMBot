@@ -205,35 +205,11 @@ Stopt alle huidige beweging van de wielmotors, bv als deze in een andere thread 
 
 ### Draaien
 
-#### orienteer
-
-Geef het aantal graden ten opzichte van de beginrichting waarnaar de robot zich moet richten. 
-
-Dit heeft ongeveer dezelfde afwijking
-als één keer een van de draai-functies uitvoeren. De afwijking van de draai-functies is cummulatief, gebruik af en toe een oriënteer-
-functie om een te grote afwijking te vermijden.
-
-#### orienteer_noord
-
-Oriënteer de robot in dezelfde richting als bij het begin van het programma.
-
-#### orienteer_oost
-
-Oriënteer de robot naar rechts ten opzichte van de beginoriëntatie.
-
-#### orienteer_zuid
-
-Oriënteer de robot tegengesteld ten opzichte van de beginoriëntatie.
-
-#### orienteer_west
-
-Oriënteer de robot naar links ten opzichte van de beginoriëntatie.
-
 #### draai_graden
 
 Geef het aantal graden die de robot moet draaien. Positief is naar rechts draaien, negatief naar links. Let op dat er een afwijking mogelijk is,
-bij het meermaals na elkaar gebruiken van een van de draai-functies kan de cummulatieve afwijking groot worden, gebruik een van de oriënteer-functies 
-om de afwijking binnen de perken te houden.
+bij het meermaals na elkaar gebruiken van een van de draai-functies kan de cummulatieve afwijking groot worden, zeker als er vaak in dezelfde
+richting gedraaid wordt.
 
 #### draai_links
 

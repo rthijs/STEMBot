@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import sys, threading, time
+import sys, threading, time, collections
 
 from ev3dev2.motor import (OUTPUT_A, OUTPUT_B, OUTPUT_C, OUTPUT_D, LargeMotor,
                            MediumMotor, MoveTank, Motor)
@@ -107,73 +107,130 @@ class DeVestenBot():
     # Functies ivm draaien
     #
 
-    def orienteer(self,richting):
+    def draai_graden(self,graden):
         '''
-        Draai de robot naar de gegeven richting. Bij de start van het programma is recht vooruit 0°.
-        Deze functie is handig als de robot al veel draaibewegingen heeft moeten maken, deze hebben telkens
-        een kleine afwijking, met deze functie kan je heroriënteren. Deze functie heeft een maximale afwijking
-        van ongeveer 3° (experimenteel bepaald, afwijking meestal door overshoot in de draairichting.)
+        Draai de robot het gegeven aantal graden.
+
+        Deze functie gebruikt de gyro-sensor en omdat deze nogal traag is en neiging heeft tot driften is deze functie
+        nogal complex. De robot zal eerst trachten het correcte aantal graden te draaien, vervolgens wachten tot de gyro
+        een stabiele uitlezing geeft en daarna een eventuele correctie toepassen. Moest de gyro beginnen driften zal de
+        uitlezing gestopt worden na 1 seconde, de afwijking in dat geval is enkele graden (ongeveer 3).
+
+        Let op dat de afwijking cumulatief is, hoe meer gedraai hoe groter de afwijking, vooral als er veel in dezelfde
+        richting gedraaid wordt.
         '''
-        huidige_orientatie = self.gyro.angle
-        wijzerzin = 1
-        tegenwijzerzin = -1
-        rotatiesnelheid = 50
+        # deze waarden kan je tunen
+        SNELHEID_HOOG = 100
+        SNELHEID_LAAG = 40
+        MAX_GYRO_METING_ITERATIES = 10 #als de gyro begint te driften duurt het eeuwig, stop daarom na 10 metingreeksen (1 seconde)
 
-        self.log("### (orienteer) orienteer naar: " + str(richting) +  ", huidige orientatie = " + str(huidige_orientatie))
+        # deze niet veranderen
+        WIJZERZIN = 1
+        TEGENWIJZERZIN = -1
 
-        def roteer(self, zin):
-            self.motor_links.run_forever(speed_sp=rotatiesnelheid * zin, stop_action='brake')
-            self.motor_rechts.run_forever(speed_sp=-rotatiesnelheid * zin, stop_action='brake')
+        def _wacht_tot_gyro_meting_stabiel():
 
-        if(richting < huidige_orientatie):
-            #draai tegenwijzerzin
-            self.log("### (orienteer) roteer tegenwijzerzin")
-            t_roteren = threading.Thread(target=roteer, args=[self,tegenwijzerzin])
-            t_roteren.start()
-            while(richting < self.gyro.angle):
-                self.log("### (orienteer) : " + str(richting) +" < " + str(self.gyro.angle))
-                pass
-            self.log("### (orienteer) noodstop")
+            def _gyro_stabiel(metingen):
+
+                def _meting_volledig():
+                    if len(metingen) == 10:
+                        return True
+                    else:
+                        return False
+
+                def _10_metingen_gelijk():
+                    self.log(str(meting_ring))
+                    for i in range(1,10):
+                        if metingen[i] != metingen[0]:
+                            return False
+                    return True
+
+                if _meting_volledig():
+                    return _10_metingen_gelijk()
+                else:
+                    return False
+
+            meting_ring = collections.deque(maxlen=10)
+            iteraties = 0
+
+            while _gyro_stabiel(meting_ring) == False:
+                if iteraties >= MAX_GYRO_METING_ITERATIES:
+                    break
+                meting_ring.append(self.gyro.angle)
+                iteraties = iteraties + 1
+                time.sleep(0.1)
+
+        def _roteer_robot_graden(hoek,snelheid):
+
+            def _reset_gyro():
+                self.gyro.mode = self.gyro.MODE_GYRO_RATE
+                _wacht_tot_gyro_meting_stabiel()
+                self.gyro.mode = self.gyro.MODE_GYRO_ANG
+                _wacht_tot_gyro_meting_stabiel()
+
+            def _get_rotatie_zin(graden):
+                if graden > 0:
+                    return WIJZERZIN
+                return TEGENWIJZERZIN
+
+            def _wacht_tot_gewenste_hoek_bereikt(hoek):
+
+                def _blijf_draaien(graden):
+                    if _get_rotatie_zin(graden) == WIJZERZIN:
+                        if self.gyro.angle < graden:
+                            return True
+                    else:
+                        if self.gyro.angle > graden:
+                            return True
+                    return False
+
+                while _blijf_draaien(hoek):
+                    self.log(str(self.gyro.angle))
+                    pass
+
+            def _draai_robot_in_thread(zin, snelheid):
+
+                def _draai_robot(zin, snelheid):
+                    self.motor_links.run_forever(speed_sp=snelheid * zin, stop_action='brake')
+                    self.motor_rechts.run_forever(speed_sp=-snelheid * zin, stop_action='brake')
+
+                t_draaien = threading.Thread(target=_draai_robot, args=(zin,snelheid))
+                t_draaien.start()
+
+            _reset_gyro()
+            _draai_robot_in_thread(_get_rotatie_zin(hoek),snelheid)
+            _wacht_tot_gewenste_hoek_bereikt(hoek)
             self.noodstop()
-        else:
-            #draai wijzerzin
-            self.log("### (orienteer) roteer wijzerzin")
-            t_roteren = threading.Thread(target=roteer, args=[self,wijzerzin])
-            t_roteren.start()
-            while(richting > self.gyro.angle):
-                self.log("### (orienteer) : " + str(richting) +" > " + str(self.gyro.angle))
-                pass
-            self.log("### (orienteer) noodstop")
-            self.noodstop()
 
-    def orienteer_noord(self):
-        ''' Draai de robot zodat hij dezelfde orientatie krijgt als toen het programma startte.'''
-        self.orienteer(0)    
-    
-    def orienteer_oost(self):
-        '''Orienteer de robot 90° rechts ten opzichte van de orientatie bij het begin van het programma.'''
-        self.orienteer(90) 
-    
-    def orienteer_zuid(self):
-        '''Orienteer de robot 180° ten opzichte van de orientatie bij het begin van het programma.'''
-        self.orienteer(180) 
-    
-    def orienteer_west(self):
-        '''Orienteer de robot 90° links ten opzichte van de orientatie bij het begin van het programma.'''
-        self.orienteer(-90)
+        def _corrigeer_overshot():
+            _wacht_tot_gyro_meting_stabiel()
+            overshoot_correctie = graden - self.gyro.angle
+            _roteer_robot_graden(overshoot_correctie,SNELHEID_LAAG)       
 
-    def draai_graden(self, graden):
+        _roteer_robot_graden(graden,SNELHEID_HOOG)
+        _corrigeer_overshot()
+
+    def draai_graden_geen_gyro(self, graden):
         '''
-        Roteer de robot het gegeven aantal graden. Een kleine afwijking is te verwachten, de robot roteert
-        vaak 2 à 3° te ver. Gebruik negatieve graden om naar links te draaien. Gebruik een van de orienteer_*-functies
-        om een opeenstapeling van afwijkingen te vermijden.
+        Gebruik deze functie om de robot te draaien zonder gebruik te maken van de gyro-sensor. Afhankelijk
+        van de robot en sensor kan dit nauwkeuriger zijn, geef het aantal graden dat de robot moet draaien, 
+        wijzerzin is positief.
+
+        De robot heeft een breedte van 15cm,  maar we nemen het midden van de wielen als de buitenste maat voor 
+        de cirkel die we gebruiken in de berekening. Een wiel is 2,8cm breed, 2 halve wielen aftrekken van 15cm 
+        geeft 12,2cm. Voor een volledige draai van 360° moet elk wiel dus 12,2*PI (= 38,3274303738) cm  rijden 
+        in tegengestelde zin. 1° draaien is dus 0,106465084 cm voor elk wiel en dat komt overeen met 2,178571423° 
+        wielrotatie
         '''
-        huidige_orientatie = self.gyro.angle
-        doel_orientatie = huidige_orientatie + graden
-
-        self.log("### (draai_graden) orienteer naar: " + str(doel_orientatie))
-
-        self.orienteer(doel_orientatie)
+        wielrotatie_per_graad = 2.178571423
+        correctiefactor = 1.00
+        wielrotatie = wielrotatie_per_graad * graden * correctiefactor
+        wielrotatie_links = wielrotatie
+        wielrotatie_rechts = wielrotatie * -1
+        self.motor_links.run_to_rel_pos(position_sp=wielrotatie_links, stop_action="hold", speed_sp=75)
+        self.motor_rechts.run_to_rel_pos(position_sp=wielrotatie_rechts, stop_action="hold", speed_sp=75)
+        self.motor_links.wait_while('running')
+        self.motor_rechts.wait_while('running')
 
     def draai_links(self):
         '''Draai de robot 90° naar links, een kleine afwijking (tot 3°) is mogelijk, meestal door overshoot.'''
