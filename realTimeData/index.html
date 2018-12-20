@@ -1,0 +1,61 @@
+<html>
+    <head>
+        <title>Socket io test</title>
+        <script src="jquery-3.3.1.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="style.css">
+    </head>
+    <body>
+
+        <div id="status">connecting...</div>
+
+        <table id="sensordata">
+            <tr>
+                <th>Timestamp</th>
+                <th>Motor Links</th>
+                <th>Motor Rechts</th>
+                <th>Motor Grijper</th>
+                <th>Afstand</th>
+                <th>Hoek</th>
+                <th>Druk</th>
+                <th>Kleur</th>
+            </tr>
+
+        </table>
+
+
+
+
+        <script src="socket.io.js"></script>
+
+        <script>
+
+            var socket = io.connect(location.hostname + ':8081')
+
+            $(document).ready(function() {   
+                function poll_connection_status() { 
+                    $('#status').text('connected: ' + socket.connected + ', sid='+socket.id)
+                }
+                setInterval (poll_connection_status, 5000);
+            });
+
+            socket.on('test', function (data) {
+                //var data_json = $.parseJSON('[' + data + ']');
+                var data_json = JSON.parse(data);
+
+                sensor_row = "<tr>";
+                sensor_row = sensor_row + "<td>" + data_json['TIMESTAMP'] + "</td>";
+                sensor_row = sensor_row + "<td>" + data_json['MOTOR_LINKS'] + "</td>";
+                sensor_row = sensor_row + "<td>" + data_json['MOTOR_RECHTS'] + "</td>";
+                sensor_row = sensor_row + "<td>" + data_json['GRIJPER'] + "</td>";
+                sensor_row = sensor_row + "<td>" + data_json['AFSTAND'] + "</td>";
+                sensor_row = sensor_row + "<td>" + data_json['GYRO'] + "</td>";
+                sensor_row = sensor_row + "<td class=\"drukkleur_" + data_json['DRUK'] + "\">" + data_json['DRUK'] + "</td>";
+                sensor_row = sensor_row + "<td class=\"kleur_" + data_json['KLEUR'] + "\">" + data_json['KLEUR'] + "</td>";
+                sensor_row = sensor_row + "</td>"; 
+
+                $('#sensordata tr').eq(0).after(sensor_row)
+            });
+
+        </script>
+    </body>
+</html>

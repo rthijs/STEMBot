@@ -19,6 +19,7 @@ class DeVestenBot():
         self.motor_links = LargeMotor(self.motor_links_poort)
         self.motor_rechts = LargeMotor(self.motor_rechts_poort)
         self.geluid = sound.Sound()
+        self.motor_grijper=MediumMotor(OUTPUT_A)
 
         # sensors
         self.gyro = GyroSensor(address=INPUT_2)
@@ -250,15 +251,13 @@ class DeVestenBot():
 
     def grijper_open(self):
         '''Zet de grijper omhoog.'''
-        motor_grijper=MediumMotor(OUTPUT_A)
-        motor_grijper.on_for_degrees(degrees=180,speed=50)
-        motor_grijper.off()
+        self.motor_grijper.on_for_degrees(degrees=180,speed=50)
+        self.motor_grijper.off()
 
     def grijper_sluit(self):
         '''Doe de grijper omlaag.'''
-        motor_grijper=MediumMotor(OUTPUT_A)
-        motor_grijper.on_for_degrees(degrees=-180,speed=50)
-        motor_grijper.off()
+        self.motor_grijper.on_for_degrees(degrees=-180,speed=50)
+        self.motor_grijper.off()
 
     #
     # Functies ivm de sensoren
@@ -269,7 +268,6 @@ class DeVestenBot():
     def meet_afstand_in_cm(self):
         sensor = UltrasonicSensor(INPUT_4)
         afstand = sensor.distance_centimeters
-        print("gemeten afstand in cm: " + str(sensor.distance_centimeters), file=sys.stderr)
         return afstand
 
     # Druksensor

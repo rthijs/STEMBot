@@ -1,0 +1,55 @@
+body {
+    background-color: #323234;
+}
+
+table, th, td {
+    border: 1px solid #444444;
+}
+
+th {
+    color: white;
+}
+
+td {
+    color: #777777
+}
+
+.drukkleur_0 {
+    background-color: green
+}
+
+.drukkleur_1 {
+    background-color: red
+}
+
+.kleur_0 {
+    background-color: transparent
+}
+
+.kleur_1 {
+    background-color: black
+}
+
+.kleur_2 {
+    background-color: blue
+}
+
+.kleur_3 {
+    background-color: green
+}
+
+.kleur_4 {
+    background-color: yellow
+}
+
+.kleur_5 {
+    background-color: red
+}
+
+.kleur_6 {
+    background-color: white
+}
+
+.kleur_7 {
+    background-color: rgb(238, 79, 39)
+}
