@@ -35,7 +35,7 @@
                 function poll_connection_status() { 
                     $('#status').text('connected: ' + socket.connected + ', sid='+socket.id)
                 }
-                setInterval (poll_connection_status, 5000);
+                setInterval (poll_connection_status, 1000);
             });
 
             socket.on('test', function (data) {
