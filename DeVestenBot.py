@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import sys, threading, time, collections
+import sys, threading, time, collections, socket, json
 
 from ev3dev2.motor import (OUTPUT_A, OUTPUT_B, OUTPUT_C, OUTPUT_D, LargeMotor,
                            MediumMotor, MoveTank, Motor)
@@ -11,6 +11,10 @@ from ev3dev2 import sound
 
 class DeVestenBot():
     '''Basisklasse voor de robot van De Vesten'''
+
+    # settings voor data logging
+    SERVER_IP = '10.42.0.1'     # dit is zo op Linux met een bluetoothverbinding, geen idee voor de rest
+    SERVER_PORT = 2444          # één twee drie vieren hahaha
 
     def __init__(self):
         # motors
@@ -25,6 +29,53 @@ class DeVestenBot():
         self.gyro = GyroSensor(address=INPUT_2)
         self.touch = TouchSensor(address=INPUT_1)
         self.kleur = ColorSensor(address=INPUT_3)
+
+        # start data logger in eigen thread
+        t_data_logger = threading.Thread(target=self.data_logger, args=(self,))
+        t_data_logger.start()
+
+    #
+    # data logging
+    #
+    def data_logger(self):
+
+        MOTOR_LINKS = 'MOTOR_LINKS'
+        MOTOR_RECHTS = 'MOTOR_RECHTS'
+        GRIJPER = 'GRIJPER'
+        GYRO = 'GYRO'
+        AFSTAND = 'AFSTAND'
+        KLEUR = 'KLEUR'
+        DRUK = 'DRUK'
+
+        sensor_data = {
+            MOTOR_LINKS : None,
+            MOTOR_RECHTS : None,
+            GRIJPER : None,
+            GYRO : None,
+            AFSTAND : None,
+            KLEUR : None,
+            DRUK : None
+        }
+
+        def get_sensor_data():
+            sensor_data['TIMESTAMP'] = round(time.clock(),2)
+            sensor_data[MOTOR_LINKS] = round(self.motor_links.degrees)
+            sensor_data[MOTOR_RECHTS] = round(self.motor_rechts.degrees)
+            sensor_data[GRIJPER] = round(self.motor_grijper.degrees)
+            sensor_data[GYRO] = round(self.gyro.angle)
+            sensor_data[AFSTAND] = round(self.meet_afstand_in_cm(),2)
+            sensor_data[KLEUR] = self.get_kleur()
+            sensor_data[DRUK] = self.is_druksensor_ingedrukt()
+            return sensor_data
+
+        def get_sensor_data_as_json():
+            return json.dumps(get_sensor_data())
+
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect((self.SERVER_IP, self.SERVER_PORT))
+            while True:
+                s.sendall(get_sensor_data_as_json().encode())
+                time.sleep(0.25)
 
     #
     # Functies ivm rijden
