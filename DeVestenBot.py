@@ -31,7 +31,7 @@ class DeVestenBot():
         self.kleur = ColorSensor(address=INPUT_3)
 
         # start data logger in eigen thread
-        t_data_logger = threading.Thread(target=self.data_logger, args=(self,))
+        t_data_logger = threading.Thread(target=self.data_logger)
         t_data_logger.start()
 
     #
@@ -72,10 +72,13 @@ class DeVestenBot():
             return json.dumps(get_sensor_data())
 
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.connect((self.SERVER_IP, self.SERVER_PORT))
-            while True:
-                s.sendall(get_sensor_data_as_json().encode())
-                time.sleep(0.25)
+            try:
+                s.connect((self.SERVER_IP, self.SERVER_PORT))
+                while True:
+                    s.sendall(get_sensor_data_as_json().encode())
+                    time.sleep(0.25)
+            except ConnectionRefusedError:
+                self.log("Kon geen verbinding maken met de server voor het dashboard.")
 
     #
     # Functies ivm rijden
