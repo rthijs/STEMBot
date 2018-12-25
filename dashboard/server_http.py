@@ -1,42 +1,34 @@
 #!/usr/bin/env python3
 
+'''launch this and connect with a browser to port 8080'''
+
 import os
 
 from aiohttp import web
 
+current_file_dir = os.path.dirname(__file__)
 
-class server_http():
-    '''
-    Simpele http server voor het dashboard. Gebruik het start_servers script om alle nodige services
-    tegelijk te starten. Open dan http://localhost:8080 in een browser voor je je script op de robot
-    uitvoert.
-    '''
+def index(request):
+    with open(os.path.join(current_file_dir, "index.html")) as f:
+        return web.Response(text=f.read(), content_type='text/html')
 
-    current_file_dir = os.path.dirname(__file__)
+def socketiojs(request):
+    with open(os.path.join(current_file_dir, "socket.io.js")) as f:
+        return web.Response(text=f.read())
 
-    app = web.Application(debug=True)
+def jqueryjs(request):
+    with open(os.path.join(current_file_dir, "jquery-3.3.1.min.js")) as f:
+        return web.Response(text=f.read())
 
-    def __init__(self):
-        self.app.router.add_get('/', self._index)
-        self.app.router.add_get('/socket.io.js', self._socketiojs)
-        self.app.router.add_get('/jquery-3.3.1.min.js', self._jqueryjs)
-        self.app.router.add_get('/style.css', self._stylecss)
+def stylecss(request):
+    with open(os.path.join(current_file_dir, "style.css")) as f:
+        return web.Response(text=f.read())
 
-    def _index(self,request):
-        with open(os.path.join(self.current_file_dir, "index.html")) as f:
-            return web.Response(text=f.read(), content_type='text/html')
+app = web.Application()
 
-    def _socketiojs(self,request):
-        with open(os.path.join(self.current_file_dir, "socket.io.js")) as f:
-            return web.Response(text=f.read())
+app.router.add_get('/', index)
+app.router.add_get('/socket.io.js', socketiojs)
+app.router.add_get('/jquery-3.3.1.min.js', jqueryjs)
+app.router.add_get('/style.css', stylecss)
 
-    def _jqueryjs(self,request):
-        with open(os.path.join(self.current_file_dir, "jquery-3.3.1.min.js")) as f:
-            return web.Response(text=f.read())
-
-    def _stylecss(self,request):
-        with open(os.path.join(self.current_file_dir, "style.css")) as f:
-            return web.Response(text=f.read())
-
-    def get_handler(self):
-        return self.app.make_handler()
+web.run_app(app)
