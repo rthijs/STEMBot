@@ -6,5 +6,7 @@ import socket, time, json
 bot = DeVestenBot()
 
 for _ in range(4):
-    bot.rij_centimeters(20)
+    bot.log("rij 10 centimeter")
+    bot.rij_centimeters(10)
+    bot.log("draai links")
     bot.draai_links()

@@ -34,6 +34,9 @@ class DeVestenBot():
         t_data_logger = threading.Thread(target=self.data_logger)
         t_data_logger.start()
 
+        # slechte oplossing gyro probleem
+        self.laatst_gemeten_hoek = 0
+
     #
     # data logging
     #
@@ -62,7 +65,7 @@ class DeVestenBot():
             sensor_data[MOTOR_LINKS] = round(self.motor_links.degrees)
             sensor_data[MOTOR_RECHTS] = round(self.motor_rechts.degrees)
             sensor_data[GRIJPER] = round(self.motor_grijper.degrees)
-            sensor_data[GYRO] = round(self.gyro.angle)
+            sensor_data[GYRO] = round(self.get_gyro_hoek())
             sensor_data[AFSTAND] = round(self.meet_afstand_in_cm(),2)
             sensor_data[KLEUR] = self.get_kleur()
             sensor_data[DRUK] = self.is_druksensor_ingedrukt()
@@ -185,6 +188,8 @@ class DeVestenBot():
 
         def _wacht_tot_gyro_meting_stabiel():
 
+            self.log("debug: wacht tot gyro meting stabiel...")
+
             def _gyro_stabiel(metingen):
 
                 def _meting_volledig():
@@ -197,7 +202,9 @@ class DeVestenBot():
                     self.log(str(meting_ring))
                     for i in range(1,10):
                         if metingen[i] != metingen[0]:
+                            self.log("debug: gyro NIET stabiel, wachten....")
                             return False
+                    self.log("debug: gryo stabiel")
                     return True
 
                 if _meting_volledig():
@@ -210,18 +217,21 @@ class DeVestenBot():
 
             while _gyro_stabiel(meting_ring) == False:
                 if iteraties >= MAX_GYRO_METING_ITERATIES:
+                    self.log("debug: max iteraties bereikt, gyro is aan het driften: stop wachten")
                     break
-                meting_ring.append(self.gyro.angle)
+                meting_ring.append(self.get_gyro_hoek())
                 iteraties = iteraties + 1
                 time.sleep(0.1)
 
         def _roteer_robot_graden(hoek,snelheid):
 
             def _reset_gyro():
+                self.log("debug: gyro resetten...")
                 self.gyro.mode = self.gyro.MODE_GYRO_RATE
                 _wacht_tot_gyro_meting_stabiel()
                 self.gyro.mode = self.gyro.MODE_GYRO_ANG
                 _wacht_tot_gyro_meting_stabiel()
+                self.log("debug: gyro reset voltooid.")
 
             def _get_rotatie_zin(graden):
                 if graden > 0:
@@ -232,15 +242,15 @@ class DeVestenBot():
 
                 def _blijf_draaien(graden):
                     if _get_rotatie_zin(graden) == WIJZERZIN:
-                        if self.gyro.angle < graden:
+                        if self.get_gyro_hoek() < graden:
                             return True
                     else:
-                        if self.gyro.angle > graden:
+                        if self.get_gyro_hoek() > graden:
                             return True
                     return False
 
                 while _blijf_draaien(hoek):
-                    self.log(str(self.gyro.angle))
+                    self.log(str(self.get_gyro_hoek()))
                     pass
 
             def _draai_robot_in_thread(zin, snelheid):
@@ -259,7 +269,7 @@ class DeVestenBot():
 
         def _corrigeer_overshot():
             _wacht_tot_gyro_meting_stabiel()
-            overshoot_correctie = graden - self.gyro.angle
+            overshoot_correctie = graden - self.get_gyro_hoek()
             _roteer_robot_graden(overshoot_correctie,SNELHEID_LAAG)       
 
         _roteer_robot_graden(graden,SNELHEID_HOOG)
@@ -334,6 +344,21 @@ class DeVestenBot():
 
     def get_kleur(self):
         return self.kleur.color
+
+    # Gyroscoop
+
+    def get_gyro_hoek(self):
+        '''
+        Het uitlezen van de gyro geeft soms een lege waarde terug wat resulteert in ValueErrors aangezien er een
+        integer verwacht wordt. Gebruik steeds deze functie om de gyro uit te lezen om dit te voorkomen.
+        '''
+        hoek = self.laatst_gemeten_hoek
+        try:
+            hoek = self.gyro.angle
+            self.laatst_gemeten_hoek = hoek
+        except ValueError:
+            self.log("ValueError opgevangen, int verwacht maar was: " + str(hoek))
+        return hoek
 
     #
     # Functies voor output die de robot kan doen
