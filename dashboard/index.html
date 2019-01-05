@@ -2,45 +2,363 @@
     <head>
         <title>Socket io test</title>
         <script src="jquery-3.3.1.min.js"></script>
+        <script src="Chart.bundle.js"></script>
+        <script src="socket.io.js"></script>
         <link rel="stylesheet" type="text/css" href="style.css">
     </head>
     <body>
 
-        <div id="status">connecting...</div>
+        <div class="site">
+            <div id="header">
+                <h1>EV3 Dashboard</h1>
+                <p id="status">connecting...</p>
+            </div>
+            <div id="graphLM">
+                <canvas id="graphLMCanvas"></canvas>
+            </div>
+            <div id="graphGyro">
+                <canvas id="graphGyroCanvas"></canvas>
+            </div>
+            <div id="graphSM">
+                <canvas id="graphSMCanvas"></canvas>
+            </div>
+            <div id="graphAfstand">
+                <canvas id="graphAfstandCanvas"></canvas>
+            </div>
+            <div id="graphDruk">
+                <canvas id="graphDrukCanvas"></canvas>
+            </div>
+            <div id="graphKleur">
+                <canvas id="graphKleurCanvas"></canvas>
+            </div>
+            <div id="dataTable">
+                <table id="sensordata">
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Motor Links</th>
+                        <th>Motor Rechts</th>
+                        <th>Motor Grijper</th>
+                        <th>Afstand</th>
+                        <th>Hoek</th>
+                        <th>Druk</th>
+                        <th>Kleur</th>
+                    </tr>
+                </table>
+            </div>
+        </div>
 
-        <table id="sensordata">
-            <tr>
-                <th>Timestamp</th>
-                <th>Motor Links</th>
-                <th>Motor Rechts</th>
-                <th>Motor Grijper</th>
-                <th>Afstand</th>
-                <th>Hoek</th>
-                <th>Druk</th>
-                <th>Kleur</th>
-            </tr>
-
-        </table>
+  
 
 
 
 
-        <script src="socket.io.js"></script>
+        
+
 
         <script>
 
+            // layout crap
+
+            var graphLMCanvasElement = document.querySelector("#graphLMCanvas");
+            var graphGyroCanvasElement = document.querySelector("#graphGyroCanvas");
+            var graphSMCanvasElement = document.querySelector("#graphSMCanvas");
+            var graphAfstandCanvasElement = document.querySelector("#graphAfstandCanvas");
+            var graphDrukCanvasElement = document.querySelector("#graphDrukCanvas");
+            var graphKleurCanvasElement = document.querySelector("#graphKleurCanvas");
+            var graphXDivElement = document.getElementById("graphLM"); //eender welke is goed, ze moeten allen even groot zijn
+
+            graphLMCanvasElement.width = graphXDivElement.clientWidth;
+            graphLMCanvasElement.height = graphXDivElement.clientHeight;
+            graphGyroCanvasElement.width = graphXDivElement.clientWidth;
+            graphGyroCanvasElement.height = graphXDivElement.clientHeight;
+            graphSMCanvasElement.width = graphXDivElement.clientWidth;
+            graphSMCanvasElement.height = graphXDivElement.clientHeight;
+            graphAfstandCanvasElement.width = graphXDivElement.clientWidth;
+            graphAfstandCanvasElement.height = graphXDivElement.clientHeight;
+            graphDrukCanvasElement.width = graphXDivElement.clientWidth;
+            graphDrukCanvasElement.height = graphXDivElement.clientHeight;
+            graphKleurCanvasElement.width = graphXDivElement.clientWidth;
+            graphKleurCanvasElement.height = graphXDivElement.clientHeight;
+
+            // end layout crap
+
             var socket = io.connect(location.hostname + ':8081')
+
+
+
+
+            // ----  chart experiment ------
+
+            var ctxGraphLM = document.getElementById('graphLMCanvas').getContext('2d');
+            var ctxGraphGyro = document.getElementById('graphGyroCanvas').getContext('2d');
+            var ctxGraphSM = document.getElementById('graphSMCanvas').getContext('2d');
+            var ctxGraphAfstand = document.getElementById('graphAfstandCanvas').getContext('2d');
+            var ctxGraphDruk = document.getElementById('graphDrukCanvas').getContext('2d');
+            var ctxGraphKleur = document.getElementById('graphKleurCanvas').getContext('2d');
+
+            data_labels = [] // x-as, timestamps
+            data_gyro = [] // gyroscoop datapunten
+            data_afstand = []
+            data_motor_links = []
+            data_motor_rechts = []
+            data_motor_grijper = []
+            data_druk = []
+            data_kleur = [[],[]]
+
+            graphLMData = {
+                labels: data_labels,
+                datasets: [
+                    {
+                        label: "Motor Links",
+                        data: data_motor_links,
+                        backgroundColor: 'rgba(0, 255, 0, 1.0)',
+                        borderColor: 'rgba(0, 255, 0, 1.0)',
+                        fill: false
+                    },
+                    {
+                        label: "Motor Rechts",
+                        data: data_motor_rechts,
+                        backgroundColor: 'rgba(0, 0, 255, 1.0)',
+                        borderColor: 'rgba(0, 0, 255, 1.0)',
+                        fill: false
+                    }
+                ]
+            }
+
+            graphGyroData = {
+                labels: data_labels,
+                datasets: [
+                    {
+                        label: "Gyroscoop",
+                        data: data_gyro,
+                        backgroundColor: 'rgba(255, 0, 0, 1.0)',
+                        borderColor: 'rgba(255, 0, 0, 1.0)',
+                        fill: false
+                    }
+                ]
+            }
+
+            graphSMData = {
+                labels: data_labels,
+                datasets: [
+                    {
+                        label: "Grijpermotor",
+                        data: data_motor_grijper,
+                        backgroundColor: 'rgba(255, 0, 0, 1.0)',
+                        borderColor: 'rgba(255, 0, 0, 1.0)',
+                        fill: true
+                    }
+                ]
+            }
+
+            graphAfstandData = {
+                labels: data_labels,
+                datasets: [
+                    {
+                        label: "Afstandsensor",
+                        data: data_afstand,
+                        backgroundColor: 'rgba(255, 0, 0, 1.0)',
+                        borderColor: 'rgba(255, 0, 0, 1.0)',
+                        fill: true
+                    }
+                ]
+            }
+
+            graphDrukData = {
+                labels: data_labels,
+                datasets: [
+                    {
+                        label: "Druksensor",
+                        data: data_druk,
+                        backgroundColor: 'rgba(255, 0, 0, 1.0)',
+                        borderColor: 'rgba(255, 0, 0, 1.0)',
+                        fill: false
+                    }
+                ]
+            }
+
+            graphKleurData = {
+                labels: data_labels,
+                datasets: [
+                    {
+                        label: "Kleursensor",
+                        data: data_kleur[0],
+                        backgroundColor: data_kleur[1],
+                        borderColor: 'rgba(0,0,0,1.0)',
+                        fill: false
+                    }
+                ]
+            }
+
+            options = {
+                elements: {
+                    line: {
+                        tension: 0, // disables bezier curves
+                    }
+                },
+                animation: {
+                    duration: 0, // general animation time
+                },
+                hover: {
+                    animationDuration: 0, // duration of animations when hovering an item
+                },
+                responsiveAnimationDuration: 0, // animation duration after a resize
+                barPercentage: 1.0,
+            }
+
+            // definieer de grafieken
+            var chartGraphLM = new Chart(ctxGraphLM, {
+                type: 'line',
+                data: graphLMData,
+                options: options
+            });
+
+            var chartGraphGyro = new Chart(ctxGraphGyro, {
+                type: 'line',
+                data: graphGyroData,
+                options: options
+            });
+
+            var chartGraphSM = new Chart(ctxGraphSM, {
+                type: 'line',
+                data: graphSMData,
+                options: options
+            });
+
+            var chartGraphAfstand = new Chart(ctxGraphAfstand, {
+                type: 'line',
+                data: graphAfstandData,
+                options: options
+            });
+
+            var chartGraphDruk = new Chart(ctxGraphDruk, {
+                type: 'bar',
+                data: graphDrukData,
+                options: options
+            });
+
+            var chartGraphKleur = new Chart(ctxGraphKleur, {
+                type: 'bar',
+                data: graphKleurData,
+                options: options
+            });
+
+            //gekleurde bar test
+            /*
+            var _chartGraphKleur = new Chart(ctxGraphKleur, {
+                    type:"bar",
+                    data:{
+                        //labels:["January","February","March","April","May","June","July"],
+                        datasets:[
+                            {
+                                "label":"My First Dataset",
+                                "data":[65,59,80,81,56,55,40],
+                                "fill":false,
+                                "backgroundColor":[
+                                    "rgba(255, 99, 132, 0.2)",
+                                    "rgba(255, 159, 64, 0.2)",
+                                    "rgba(255, 205, 86, 0.2)",
+                                    "rgba(75, 192, 192, 0.2)",
+                                    "rgba(54, 162, 235, 0.2)",
+                                    "rgba(153, 102, 255, 0.2)",
+                                    "rgba(201, 203, 207, 0.2)"],
+                                "borderColor":[
+                                    "rgb(255, 99, 132)",
+                                    "rgb(255, 159, 64)",
+                                    "rgb(255, 205, 86)",
+                                    "rgb(75, 192, 192)",
+                                    "rgb(54, 162, 235)",
+                                    "rgb(153, 102, 255)",
+                                    "rgb(201, 203, 207)"],
+                                "borderWidth":1
+                            }
+                        ]
+                    },
+                    "options":{"scales":{"yAxes":[{"ticks":{"beginAtZero":true}}]}}
+            });
+            */
+
+
+            // ----  / chart experiment ------
 
             $(document).ready(function() {   
                 function poll_connection_status() { 
                     $('#status').text('connected: ' + socket.connected + ', sid='+socket.id)
                 }
+
+                function refreshGraphs() {
+                    window.chartGraphLM.update();
+                    window.chartGraphGyro.update();
+                    window.chartGraphSM.update();
+                    window.chartGraphAfstand.update();
+                    window.chartGraphDruk.update();
+                    window.chartGraphKleur.update();
+                }
+
                 setInterval (poll_connection_status, 1000);
+                setInterval (refreshGraphs, 1000)
             });
 
             socket.on('test', function (data) {
-                //var data_json = $.parseJSON('[' + data + ']');
+
+                function set_kleur_data(kleurcode){
+                    console.log('kleurcode: ' + kleurcode)
+                    geen_kleur = 'rgba(0,0,0,1.0)'
+                    zwart = 'rgba(0,0,0,1.0)'
+                    blauw = 'rgba(0,0,255,1.0)'
+                    groen = 'rgba(0,255,255,1.0)'
+                    geel = 'rgba(0,255,0,1.0)'
+                    rood = 'rgba(255,0,0,1.0)'
+                    wit = 'rgba(255,255,255,1.0)'
+                    bruin = 'rgba(255,100,35,1.0)'
+
+                    switch(kleurcode) {
+                        case 0:
+                            data_kleur[0].push(0);
+                            data_kleur[1].push(geen_kleur);
+                            break;
+                        case 1:
+                            data_kleur[0].push(1);
+                            data_kleur[1].push(zwart);
+                            break;
+                        case 2:
+                            data_kleur[0].push(1);
+                            data_kleur[1].push(blauw);
+                            break;
+                        case 3:
+                            data_kleur[0].push(1);
+                            data_kleur[1].push(groen);
+                            break;
+                        case 4:
+                            data_kleur[0].push(1);
+                            data_kleur[1].push(geel);
+                            break;
+                        case 5:
+                            data_kleur[0].push(1);
+                            data_kleur[1].push(rood);
+                            break;
+                        case 6:
+                            data_kleur[0].push(1);
+                            data_kleur[1].push(wit);
+                            break;
+                        case 7:
+                            data_kleur[0].push(1);
+                            data_kleur[1].push(bruin);
+                            break;
+                    }
+                    
+                }
+
                 var data_json = JSON.parse(data);
+
+                data_labels.push(data_json['TIMESTAMP'])
+                data_gyro.push(data_json['GYRO']);
+                data_afstand.push(data_json['AFSTAND']);
+                data_motor_links.push(data_json['MOTOR_LINKS']);
+                data_motor_rechts.push(data_json['MOTOR_RECHTS']);
+                data_motor_grijper.push(data_json['GRIJPER']);
+                data_druk.push(data_json['DRUK']);
+                set_kleur_data(data_json['KLEUR'])
 
                 sensor_row = "<tr>";
                 sensor_row = sensor_row + "<td>" + data_json['TIMESTAMP'] + "</td>";
@@ -54,8 +372,11 @@
                 sensor_row = sensor_row + "</td>"; 
 
                 $('#sensordata tr').eq(0).after(sensor_row)
+
+                
             });
 
         </script>
+
     </body>
 </html>

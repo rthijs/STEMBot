@@ -19,6 +19,10 @@ def socketiojs(request):
 def jqueryjs(request):
     with open(os.path.join(current_file_dir, "jquery-3.3.1.min.js")) as f:
         return web.Response(text=f.read())
+        
+def chartjs(request):
+    with open(os.path.join(current_file_dir, "Chart.bundle.js")) as f:
+        return web.Response(text=f.read())
 
 def stylecss(request):
     with open(os.path.join(current_file_dir, "style.css")) as f:
@@ -29,6 +33,7 @@ app = web.Application()
 app.router.add_get('/', index)
 app.router.add_get('/socket.io.js', socketiojs)
 app.router.add_get('/jquery-3.3.1.min.js', jqueryjs)
+app.router.add_get('/Chart.bundle.js', chartjs)
 app.router.add_get('/style.css', stylecss)
 
 web.run_app(app)

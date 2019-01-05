@@ -1,55 +1,63 @@
-body {
-    background-color: #323234;
+.site {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-rows: auto 250px 250px 250px auto;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-areas:
+        "header header header header"
+        "graphLM graphLM graphGyro graphGyro"
+        "graphSM graphSM graphAfstand graphAfstand"
+        "graphDruk graphDruk graphKleur graphKleur"
+        "dataTable dataTable dataTable dataTable";
 }
 
-table, th, td {
-    border: 1px solid #444444;
+#header {
+    grid-area: header;
+     /*background: rgb(255, 0, 0); */
 }
 
-th {
-    color: white;
+#graphLM {
+    grid-area: graphLM;
+    /*background: rgb(255, 238, 0); */
+    position: relative;
 }
 
-td {
-    color: #777777
+#graphGyro {
+    grid-area: graphGyro;
+    /*background: rgb(0, 255, 200);*/
+    position: relative;
 }
 
-.drukkleur_0 {
-    background-color: green
+#graphSM {
+    grid-area: graphSM;
+    position: relative;
 }
 
-.drukkleur_1 {
-    background-color: red
+#graphAfstand {
+    grid-area: graphAfstand;
+    position: relative;
 }
 
-.kleur_0 {
-    background-color: transparent
+#graphDruk {
+    grid-area: graphDruk;
+    position: relative;
 }
 
-.kleur_1 {
-    background-color: black
+#graphKleur {
+    grid-area: graphKleur;
+    position: relative;
 }
 
-.kleur_2 {
-    background-color: blue
+
+#dataTable {
+    grid-area: dataTable;
+    /*background: rgb(255, 0, 149);*/
 }
 
-.kleur_3 {
-    background-color: green
-}
-
-.kleur_4 {
-    background-color: yellow
-}
-
-.kleur_5 {
-    background-color: red
-}
-
-.kleur_6 {
-    background-color: white
-}
-
-.kleur_7 {
-    background-color: rgb(238, 79, 39)
+canvas {
+    /*background: rgb(74, 3, 83);*/
+    position: absolute;
+    height: 100%;
+    width: 100%;
 }

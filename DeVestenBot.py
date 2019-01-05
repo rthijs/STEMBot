@@ -79,7 +79,7 @@ class DeVestenBot():
                 s.connect((self.SERVER_IP, self.SERVER_PORT))
                 while True:
                     s.sendall(get_sensor_data_as_json().encode())
-                    time.sleep(0.25)
+                    time.sleep(1)
             except ConnectionRefusedError:
                 self.log("Kon geen verbinding maken met de server voor het dashboard.")
 
