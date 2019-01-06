@@ -1,8 +1,26 @@
+body {
+    background-color: #191919;
+    color: #516A83;
+    font-family: monospace;
+    text-align: center;
+}
+
+h1 {
+    color: #9CBCB2;
+    margin: 0px;
+    padding: 0px;
+}
+
+#header p {
+    font-size: 10px;
+    padding: 0px;
+    margin: 0px;
+}
 .site {
     width: 100%;
     height: 100%;
     display: grid;
-    grid-template-rows: auto 250px 250px 250px auto;
+    grid-template-rows: auto 200px 200px 200px 1fr;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-areas:
         "header header header header"
@@ -10,11 +28,11 @@
         "graphSM graphSM graphAfstand graphAfstand"
         "graphDruk graphDruk graphKleur graphKleur"
         "dataTable dataTable dataTable dataTable";
+    grid-gap: 8px;
 }
 
 #header {
     grid-area: header;
-     /*background: rgb(255, 0, 0); */
 }
 
 #graphLM {
@@ -52,12 +70,65 @@
 
 #dataTable {
     grid-area: dataTable;
-    /*background: rgb(255, 0, 149);*/
 }
 
 canvas {
-    /*background: rgb(74, 3, 83);*/
+    background-color: #272839;
     position: absolute;
     height: 100%;
     width: 100%;
+}
+
+.drukkleur_0 {
+    background-color: #5aa35c;
+}
+
+.drukkleur_1 {
+    background-color: #f32e20;
+}
+
+.kleur_0 {
+    background-color: transparent
+}
+
+.kleur_1 {
+    background-color: #222222
+}
+
+.kleur_2 {
+    background-color: #2539ed;
+}
+
+.kleur_3 {
+    background-color: #5aa35d;
+}
+
+.kleur_4 {
+    background-color: #da9222;
+}
+
+.kleur_5 {
+    background-color: #f32e20;
+}
+
+.kleur_6 {
+    background-color: #dddddd;
+}
+
+.kleur_7 {
+    background-color: #864a1e;
+}
+
+table, th, td {
+    border: 1px solid #272839;
+    text-align: right;
+    background-color: #2A3744;
+}
+
+th {
+    color: #9CBCB2;
+}
+
+td {
+    color: #516A83
 }

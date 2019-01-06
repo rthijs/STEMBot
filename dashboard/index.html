@@ -47,17 +47,7 @@
             </div>
         </div>
 
-  
-
-
-
-
-        
-
-
         <script>
-
-            // layout crap
 
             var graphLMCanvasElement = document.querySelector("#graphLMCanvas");
             var graphGyroCanvasElement = document.querySelector("#graphGyroCanvas");
@@ -80,14 +70,7 @@
             graphKleurCanvasElement.width = graphXDivElement.clientWidth;
             graphKleurCanvasElement.height = graphXDivElement.clientHeight;
 
-            // end layout crap
-
             var socket = io.connect(location.hostname + ':8081')
-
-
-
-
-            // ----  chart experiment ------
 
             var ctxGraphLM = document.getElementById('graphLMCanvas').getContext('2d');
             var ctxGraphGyro = document.getElementById('graphGyroCanvas').getContext('2d');
@@ -111,16 +94,16 @@
                     {
                         label: "Motor Links",
                         data: data_motor_links,
-                        backgroundColor: 'rgba(0, 255, 0, 1.0)',
-                        borderColor: 'rgba(0, 255, 0, 1.0)',
-                        fill: false
+                        backgroundColor: '#5aa35c22',
+                        borderColor: '#5aa35c',
+                        fill: true
                     },
                     {
                         label: "Motor Rechts",
                         data: data_motor_rechts,
-                        backgroundColor: 'rgba(0, 0, 255, 1.0)',
-                        borderColor: 'rgba(0, 0, 255, 1.0)',
-                        fill: false
+                        backgroundColor: '#2539ed22',
+                        borderColor: '#2539ed',
+                        fill: true
                     }
                 ]
             }
@@ -131,9 +114,9 @@
                     {
                         label: "Gyroscoop",
                         data: data_gyro,
-                        backgroundColor: 'rgba(255, 0, 0, 1.0)',
-                        borderColor: 'rgba(255, 0, 0, 1.0)',
-                        fill: false
+                        backgroundColor: '#516A8322',
+                        borderColor: '#516A83',
+                        fill: true
                     }
                 ]
             }
@@ -144,8 +127,8 @@
                     {
                         label: "Grijpermotor",
                         data: data_motor_grijper,
-                        backgroundColor: 'rgba(255, 0, 0, 1.0)',
-                        borderColor: 'rgba(255, 0, 0, 1.0)',
+                        backgroundColor: '#da922222',
+                        borderColor: '#da9222',
                         fill: true
                     }
                 ]
@@ -157,8 +140,8 @@
                     {
                         label: "Afstandsensor",
                         data: data_afstand,
-                        backgroundColor: 'rgba(255, 0, 0, 1.0)',
-                        borderColor: 'rgba(255, 0, 0, 1.0)',
+                        backgroundColor: '#bbbbbb22',
+                        borderColor: '#bbbbbb',
                         fill: true
                     }
                 ]
@@ -170,9 +153,9 @@
                     {
                         label: "Druksensor",
                         data: data_druk,
-                        backgroundColor: 'rgba(255, 0, 0, 1.0)',
-                        borderColor: 'rgba(255, 0, 0, 1.0)',
-                        fill: false
+                        backgroundColor: '#f32e20cc',
+                        borderColor: '#f32e20',
+                        fill: true
                     }
                 ]
             }
@@ -184,8 +167,8 @@
                         label: "Kleursensor",
                         data: data_kleur[0],
                         backgroundColor: data_kleur[1],
-                        borderColor: 'rgba(0,0,0,1.0)',
-                        fill: false
+                        borderColor: data_kleur[1],
+                        fill: true
                     }
                 ]
             }
@@ -203,7 +186,19 @@
                     animationDuration: 0, // duration of animations when hovering an item
                 },
                 responsiveAnimationDuration: 0, // animation duration after a resize
-                barPercentage: 1.0,
+                scales: {
+                    xAxes: [{
+                        categoryPercentage: 1.0,
+                        barPercentage: 1.0
+                    }],
+                    yAxes: [{
+                        display: true,
+                        ticks: {
+                            suggestedMin: 0,    // minimum will be 0, unless there is a lower value.
+                            suggestedMax: 1,
+                        }
+                    }]
+                }
             }
 
             // definieer de grafieken
@@ -243,44 +238,6 @@
                 options: options
             });
 
-            //gekleurde bar test
-            /*
-            var _chartGraphKleur = new Chart(ctxGraphKleur, {
-                    type:"bar",
-                    data:{
-                        //labels:["January","February","March","April","May","June","July"],
-                        datasets:[
-                            {
-                                "label":"My First Dataset",
-                                "data":[65,59,80,81,56,55,40],
-                                "fill":false,
-                                "backgroundColor":[
-                                    "rgba(255, 99, 132, 0.2)",
-                                    "rgba(255, 159, 64, 0.2)",
-                                    "rgba(255, 205, 86, 0.2)",
-                                    "rgba(75, 192, 192, 0.2)",
-                                    "rgba(54, 162, 235, 0.2)",
-                                    "rgba(153, 102, 255, 0.2)",
-                                    "rgba(201, 203, 207, 0.2)"],
-                                "borderColor":[
-                                    "rgb(255, 99, 132)",
-                                    "rgb(255, 159, 64)",
-                                    "rgb(255, 205, 86)",
-                                    "rgb(75, 192, 192)",
-                                    "rgb(54, 162, 235)",
-                                    "rgb(153, 102, 255)",
-                                    "rgb(201, 203, 207)"],
-                                "borderWidth":1
-                            }
-                        ]
-                    },
-                    "options":{"scales":{"yAxes":[{"ticks":{"beginAtZero":true}}]}}
-            });
-            */
-
-
-            // ----  / chart experiment ------
-
             $(document).ready(function() {   
                 function poll_connection_status() { 
                     $('#status').text('connected: ' + socket.connected + ', sid='+socket.id)
@@ -304,13 +261,13 @@
                 function set_kleur_data(kleurcode){
                     console.log('kleurcode: ' + kleurcode)
                     geen_kleur = 'rgba(0,0,0,1.0)'
-                    zwart = 'rgba(0,0,0,1.0)'
-                    blauw = 'rgba(0,0,255,1.0)'
-                    groen = 'rgba(0,255,255,1.0)'
-                    geel = 'rgba(0,255,0,1.0)'
-                    rood = 'rgba(255,0,0,1.0)'
-                    wit = 'rgba(255,255,255,1.0)'
-                    bruin = 'rgba(255,100,35,1.0)'
+                    zwart = '#222222cc'
+                    blauw = '#2539edcc'
+                    groen = '#5aa35dcc'
+                    geel = '#da9222cc'
+                    rood = '#f32e20cc'
+                    wit = '#ddddddcc'
+                    bruin = '#864a1ecc'
 
                     switch(kleurcode) {
                         case 0:
@@ -372,7 +329,6 @@
                 sensor_row = sensor_row + "</td>"; 
 
                 $('#sensordata tr').eq(0).after(sensor_row)
-
                 
             });
 

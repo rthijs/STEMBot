@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import sys, threading, time, collections, socket, json
+import sys, threading, time, collections, socket, json, os
 
 from ev3dev2.motor import (OUTPUT_A, OUTPUT_B, OUTPUT_C, OUTPUT_D, LargeMotor,
                            MediumMotor, MoveTank, Motor)
@@ -36,6 +36,11 @@ class DeVestenBot():
 
         # slechte oplossing gyro probleem
         self.laatst_gemeten_hoek = 0
+
+        self.gyro.mode = self.gyro.MODE_GYRO_RATE
+        time.sleep(1)
+        self.gyro.mode = self.gyro.MODE_GYRO_ANG
+        
 
     #
     # data logging
@@ -79,7 +84,7 @@ class DeVestenBot():
                 s.connect((self.SERVER_IP, self.SERVER_PORT))
                 while True:
                     s.sendall(get_sensor_data_as_json().encode())
-                    time.sleep(1)
+                    time.sleep(0.1)
             except ConnectionRefusedError:
                 self.log("Kon geen verbinding maken met de server voor het dashboard.")
 
@@ -178,8 +183,8 @@ class DeVestenBot():
         richting gedraaid wordt.
         '''
         # deze waarden kan je tunen
-        SNELHEID_HOOG = 100
-        SNELHEID_LAAG = 40
+        SNELHEID_HOOG = 70
+        SNELHEID_LAAG = 30
         MAX_GYRO_METING_ITERATIES = 10 #als de gyro begint te driften duurt het eeuwig, stop daarom na 10 metingreeksen (1 seconde)
 
         # deze niet veranderen
@@ -288,7 +293,7 @@ class DeVestenBot():
         wielrotatie
         '''
         wielrotatie_per_graad = 2.178571423
-        correctiefactor = 1.00
+        correctiefactor = 0.89
         wielrotatie = wielrotatie_per_graad * graden * correctiefactor
         wielrotatie_links = wielrotatie
         wielrotatie_rechts = wielrotatie * -1
@@ -413,3 +418,10 @@ class DeVestenBot():
    # kan dit een leuke oefening zijn om zelf een functie te implementeren die dit toestaat. De help tekst van de Sound library
    # kan je op weg helpen.
    #
+
+    def exit_program(self):
+        '''
+        Sluit je programma en alle threads af zodat je dat niet manueel moet doen in VS Code.
+        '''
+        time.sleep(2)
+        os._exit(0)

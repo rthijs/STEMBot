@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
 from DeVestenBot import DeVestenBot
-import socket, time, json
 
 bot = DeVestenBot()
 
-#while True:
-#    pass
-
 for _ in range(4):
     bot.rij_centimeters(20)
-    bot.draai_links()
+    bot.grijper_sluit()
+    bot.grijper_open()
+    bot.draai_graden_geen_gyro(-90)
+
+bot.exit_program()
