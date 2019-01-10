@@ -2,6 +2,11 @@
 
 Abstractie van de STEM Robot componenten zodat leerlingen snel aan de slag kunnen om hun robot te programmeren met Python.
 
+<video poster="devestenbot_poster.png" width="320" height="200" controls preload> 
+    <source src=".README/devestenbot.mp4"></source> 
+    <source src=".README/devestenbot.webm"></source> 
+</video>
+
 ## Vereisten
 
 ### STEM Robot
