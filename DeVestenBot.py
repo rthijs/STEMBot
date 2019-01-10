@@ -293,7 +293,7 @@ class DeVestenBot():
         wielrotatie
         '''
         wielrotatie_per_graad = 2.178571423
-        correctiefactor = 0.89
+        correctiefactor = 0.981
         wielrotatie = wielrotatie_per_graad * graden * correctiefactor
         wielrotatie_links = wielrotatie
         wielrotatie_rechts = wielrotatie * -1
