@@ -40,6 +40,20 @@ Download [Visual Studio Code](https://code.visualstudio.com/) en configureer dit
 
 Een programma naar de robot sturen en uitvoeren kan je doen door op "F5" te drukken.
 
+### Unable to import 'ev3dev2.motor'
+
+Als je de klasse DeVestenBot.py opent of onderaan in VS Code naar "Problems" kijkt zie je dat er een aantal problemen zijn, allen "Unable to import ...". 
+
+![Unable to import](.README/unable_to_import.png)
+
+Dit komt omdat ev3dev2, wat nodig is om de Mindstorms onderdelen aan te sturen, niet geïnstalleerd is op je pc. Dat hoeft geen probleem te zijn aangezien het OS op het SD-kaartje in de robot deze wel heeft. Als je zelf wat wil experimenteren is het handig dat je dit wel installeert.
+
+Klik onderaan op "Terminal" of open een command prompt of powershell en typ: `pip install python-ev3dev2`.
+
+![pip install python-ev3dev2](.README/pip_install.png)
+
+Hierna zijn de foutmeldingen weg en kan je ook ctrl-klikken op de klassen, de code-completion en tool tips gebruiken.
+
 ## Hoe beginnen?
 
 1. Maak een nieuwe file met een `.py` extensie.
@@ -295,3 +309,99 @@ De robot voert de volgende commando's al uit terwijl hij praat tenzij je de para
 ##### speel
 
 De robot speelt een wav-bestand af, net zoals met `spreek` kan je hem laten wachten met andere commando's uitvoeren door de parameter "wacht" op `True` te zetten.
+
+# Het dashboard
+
+Ik heb de mogelijkheid voorzien om de sensordata van je robot in de gaten te houden terwijl de robot zijn programma uitvoert.
+
+## Opgepast
+
+Tijdens het testen heb ik gemerkt dat de gyrosensor soms compleet flipt als er teglijk sensordata verstuurd wordt. Dit zorgt ervoor dat de de draai-commandos die de gyro gebruiken niet goed werken. Gebruik daarom `draai_graden_geen_gyro` in plaats van `draai_graden`. Het kan natuurlijk ook aan deze specifieke robot gelegen hebben dus test het zelf eerst uit.
+
+## Packages installeren
+
+De servers gebruiken nog enkele extra packages, deze installeer je door volgende commandos in een terminal of shell te typen:
+
+```
+pip install socketio-client
+
+pip install python-socketio
+
+pip install aiohttp
+```
+
+## IP-adres juist zetten
+
+Als je robot correct verbinding heeft gemaakt met je laptop heeft deze een ip-adres gekregen. Dat kan je bovenaan het schermpje zien, bv `169.254.142.233`. 
+
+Typ `ipconfig` in een shell (in Linux `ifconfig`) en zoek het ip-adres van je laptop dat in hetzelfde netwerk zit. Hier is dat `169.254.254.192`.
+
+![netwerk instellen](.README/bluetooth_netwerk.png)
+
+Pas nu in de bestanden `DeVestenBot.py` en `dashboard/server_socket.py` de variabelen aan naar de waarde van het ip-adres van je laptop.
+
+![variabele HOST in server_socket.py](.README/ip_1.png)
+
+![variabele SERVER_IP in DeVestenBot.py](.README/ip_2.png)
+
+## De servers starten
+
+Nu kunnen we de nodige services starten. Navigeer met de bestandsbeheerder naar de dashboard folder in het project. Doe shift+rechtsklik om een menu te openen en kies `PowerShell-venster hier openen`. 
+
+![PowerShell-venster hier openen](.README/ps_venster_openen.png)
+
+Doe dit drie maal en voer de volgende commandos uit. Eén per venster:
+
+```
+python.exe .\server_http.py
+
+python.exe .\server_socket.py
+
+python.exe .\server_socketio.py
+```
+
+Als je een beveiligingsmelding krijgt van de firewall met je dit natuurlijk toelaten.
+
+![Servers running](.README/servers_up.png)
+
+## Het dashboard openen
+
+Navigeer met je browser naar `http://localhost:8080`. Als er onder de titel `connected: true` verschijnt is het in orde.
+
+![leeg dashboard](.README/dashboard_leeg.png)
+
+## De correctiefactor voor draaien instellen
+
+Ga terug naar VS Code en open `DeVestenBot.py`, zet op regel 296 de correctiefactor op 1.
+
+![correctiefactor](.README/correctiefactor.png)
+
+Open het script `ROELTEST.py`. Dit bevat de volgende code:
+
+```python
+#!/usr/bin/env python3
+
+from DeVestenBot import DeVestenBot
+
+bot = DeVestenBot()
+
+for _ in range(4):
+    bot.rij_centimeters(20)
+    bot.grijper_sluit()
+    bot.grijper_open()
+    bot.draai_graden_geen_gyro(-90)
+
+bot.exit_program()
+```
+
+Als je al verbinding hebt met je robot (groene bol in de EV3dev Device Browser) kan je dit uitvoeren op de bot door F5 te drukken. Van zodra de robot begint te rijden zal je ook het dashboard zien opvullen.
+
+![vol dashboard](.README/dashboard_vol.png)
+
+Een paar dingen vallen op. Ten eerste zijn de kleuren fucked in de Microsoft Edge en ten tweede heeft de robot te ver gedraaid. 
+
+Het foute draaien komt doordat de robot een afwijking heeft ahankelijk van welke robot je gebruikt, hoe vlot de mechaniek kan bewegen en zelfs hoe vol de batterij is. We zien op het dashboard dat de robot in totaal -386° gedraaid heeft in plaats van de verwachte -360. Dat wil zeggen dat we de correctiefactor op 360/386 = 0.9326 moeten zetten. Draai vervolgens het programma opnieuw en de afwijking zou veel kleiner moeten zijn.
+
+![kleinere afwijking](.README/kleinere_afwijking.png)
+
+Nu is er een afwijking van 6°, hou er rekening mee dat de gyrosensor ook een afwijking heeft van enkele graden dus dit is een goed resultaat. Spijtig genoeg is de robot niet echt consequent, de exacte hoek kan elke rit een beetje verschillen. Hou hier rekening mee en maak gebruik van de sensors om eventueel bij te sturen.
