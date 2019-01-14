@@ -398,7 +398,7 @@ Als je al verbinding hebt met je robot (groene bol in de EV3dev Device Browser) 
 
 ![vol dashboard](.README/dashboard_vol.png)
 
-Een paar dingen vallen op. Ten eerste zijn de kleuren fucked in de Microsoft Edge en ten tweede heeft de robot te ver gedraaid. 
+Een paar dingen vallen op. Ten eerste zijn de kleuren fucked in de Microsoft Edge browser en ten tweede heeft de robot te ver gedraaid. 
 
 Het foute draaien komt doordat de robot een afwijking heeft ahankelijk van welke robot je gebruikt, hoe vlot de mechaniek kan bewegen en zelfs hoe vol de batterij is. We zien op het dashboard dat de robot in totaal -386° gedraaid heeft in plaats van de verwachte -360. Dat wil zeggen dat we de correctiefactor op 360/386 = 0.9326 moeten zetten. Draai vervolgens het programma opnieuw en de afwijking zou veel kleiner moeten zijn.
 
