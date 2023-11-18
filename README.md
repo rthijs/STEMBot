@@ -71,6 +71,8 @@ from DeVestenBot import DeVestenBot
 
 bot = DeVestenBot()
 ```
+
+> De eerste regel met de # is nodig anders krijg je `Permission Denied` errors als je je code wil uitvoeren op de robot.
 ### Voorbeeld 1: rij tot aan obstakel
 
 Er zijn `meet_afstand_in_cm`- en `rij_centimeters`-functies voorzien. Deze kunnen we gebruiken om tot aan een obstakel te rijden.
